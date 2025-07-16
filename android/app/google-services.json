@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1001851517011",
+    "project_id": "cyberdom-90ddd",
+    "storage_bucket": "cyberdom-90ddd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1001851517011:android:413fc4488c2697b78faea6",
+        "android_client_info": {
+          "package_name": "com.example.cyberdom_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_s_TR9X8rOOfrL536K9ilNpc4Agv485M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
