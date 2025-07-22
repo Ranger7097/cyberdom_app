@@ -7,7 +7,7 @@ Future<Map<String, dynamic>> login({
   required String password,
 }) async {
   final response = await http.post(
-    Uri.parse('http://<ТВОЙ_IP>:8000/login'),
+    Uri.parse('http://185.217.131.126:8000/login'),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({'username': username, 'password': password}),
   );
