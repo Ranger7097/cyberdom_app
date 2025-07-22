@@ -9,7 +9,7 @@ Future<Map<String, dynamic>> login({
   final response = await http.post(
     Uri.parse('http://185.217.131.126:8000/login'),
     headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({'username': username, 'password': password}),
+    body: jsonEncode({'member_account': username, 'member_password': password}),
   );
 
   if (response.statusCode == 200) {
