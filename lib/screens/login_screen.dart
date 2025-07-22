@@ -1,3 +1,5 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:cyberdom_app/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
@@ -68,6 +70,34 @@ class LoginScreen extends StatelessWidget {
                           onPressed: auth.isLoading
                               ? null
                               : () async {
+                                  // Проверка соединения
+                                  final connectivity = await Connectivity()
+                                      .checkConnectivity();
+                                  if (connectivity == ConnectivityResult.none) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Нет подключения к интернету',
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  // Проверка пустых полей
+                                  if (usernameController.text.isEmpty ||
+                                      passwordController.text.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Введите логин и пароль'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  // Вход
                                   await auth.login(
                                     usernameController.text,
                                     passwordController.text,
@@ -79,17 +109,46 @@ class LoginScreen extends StatelessWidget {
                                         content: Text('Успешный вход!'),
                                       ),
                                     );
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      AppRoutes.home,
+                                      arguments: {
+                                        'name': auth.member!['member_account'],
+                                        'balance':
+                                            double.tryParse(
+                                              auth.member!['member_balance']
+                                                  .toString(),
+                                            ) ??
+                                            0.0,
+                                        'points':
+                                            int.tryParse(
+                                              auth.member!['member_points']
+                                                  .toString(),
+                                            ) ??
+                                            0,
+                                        'bonusBalance':
+                                            double.tryParse(
+                                              auth.member!['member_balance_bonus']
+                                                  .toString(),
+                                            ) ??
+                                            0.0,
+                                        'coinBalance':
+                                            int.tryParse(
+                                              auth.member!['member_coin_balance']
+                                                  .toString(),
+                                            ) ??
+                                            0,
+                                        'createdAt':
+                                            auth.member!['member_create'] ?? '',
+                                      },
+                                    );
+                                    // TODO: Перейти на следующий экран
+                                  } else if (auth.error != null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(auth.error!)),
+                                    );
                                   }
                                 },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 5,
-                            ), // ниже
-                          ),
                           child: auth.isLoading
                               ? const CircularProgressIndicator(
                                   color: Colors.white,
@@ -97,7 +156,7 @@ class LoginScreen extends StatelessWidget {
                               : const Text(
                                   'ВОЙТИ',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.red,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
                                     letterSpacing: 1.2,
@@ -106,14 +165,6 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (auth.error != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Text(
-                          auth.error!,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ),
                   ],
                 ),
               ),

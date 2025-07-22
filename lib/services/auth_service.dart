@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 
 Future<Map<String, dynamic>> login({
@@ -14,9 +13,18 @@ Future<Map<String, dynamic>> login({
 
   if (response.statusCode == 200) {
     final json = jsonDecode(response.body);
-    // json может содержать session_id, user_id, etc.
-    return {'success': true, 'data': json};
+
+    final bool isVerified = json['data']['verify'] == true;
+
+    if (isVerified) {
+      return {'success': true, 'data': json['data']['member']};
+    } else {
+      return {'success': false, 'message': 'Неверный логин или пароль'};
+    }
   } else {
-    return {'success': false, 'message': 'Неверный логин или пароль'};
+    return {
+      'success': false,
+      'message': 'Ошибка сервера: ${response.statusCode}',
+    };
   }
 }
